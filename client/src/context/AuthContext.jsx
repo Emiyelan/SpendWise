@@ -29,8 +29,13 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
     };
 
+    const updateProfile = (userData) => {
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, updateProfile, loading }}>
             {loading ? <div className="flex h-screen items-center justify-center">Loading...</div> : children}
         </AuthContext.Provider>
     );

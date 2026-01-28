@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../config/api';
 
 const ExpenseList = ({ updateTrigger, onChange }) => {
     const [expenses, setExpenses] = useState([]);
@@ -12,7 +13,7 @@ const ExpenseList = ({ updateTrigger, onChange }) => {
 
     const fetchExpenses = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/expenses', {
+            const res = await fetch(`${API_URL}/expenses`, {
                 headers: { Authorization: `Bearer ${user.token}` },
             });
             const data = await res.json();
@@ -24,7 +25,7 @@ const ExpenseList = ({ updateTrigger, onChange }) => {
 
     const handleDelete = async (id) => {
         try {
-            await fetch(`http://localhost:5000/api/expenses/${id}`, {
+            await fetch(`${API_URL}/expenses/${id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${user.token}` },
             });
@@ -37,7 +38,7 @@ const ExpenseList = ({ updateTrigger, onChange }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await fetch('http://localhost:5000/api/expenses', {
+            await fetch(`${API_URL}/expenses`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

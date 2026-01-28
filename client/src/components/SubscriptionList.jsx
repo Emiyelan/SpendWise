@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../config/api';
 
 const SubscriptionList = ({ updateTrigger, onChange }) => {
     const [subscriptions, setSubscriptions] = useState([]);
@@ -12,7 +13,7 @@ const SubscriptionList = ({ updateTrigger, onChange }) => {
 
     const fetchSubscriptions = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/subscriptions', {
+            const res = await fetch(`${API_URL}/subscriptions`, {
                 headers: { Authorization: `Bearer ${user.token}` },
             });
             const data = await res.json();
@@ -24,7 +25,7 @@ const SubscriptionList = ({ updateTrigger, onChange }) => {
 
     const handleDelete = async (id) => {
         try {
-            await fetch(`http://localhost:5000/api/subscriptions/${id}`, {
+            await fetch(`${API_URL}/subscriptions/${id}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${user.token}` },
             });
@@ -37,7 +38,7 @@ const SubscriptionList = ({ updateTrigger, onChange }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await fetch('http://localhost:5000/api/subscriptions', {
+            await fetch(`${API_URL}/subscriptions`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

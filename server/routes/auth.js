@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { protect } = require('../middleware/authMiddleware');
 
 // Register
 router.post('/register', async (req, res) => {
@@ -28,6 +29,7 @@ router.post('/register', async (req, res) => {
                 _id: user.id,
                 username: user.username,
                 email: user.email,
+                salary: user.salary,
                 token: generateToken(user.id),
             });
         } else {
@@ -50,10 +52,36 @@ router.post('/login', async (req, res) => {
                 _id: user.id,
                 username: user.username,
                 email: user.email,
+                salary: user.salary,
                 token: generateToken(user.id),
             });
         } else {
             res.status(401).json({ message: 'Invalid email or password' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Update Profile (Salary)
+router.put('/profile', protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        if (user) {
+            user.salary = req.body.salary || user.salary;
+
+            const updatedUser = await user.save();
+
+            res.json({
+                _id: updatedUser._id,
+                username: updatedUser.username,
+                email: updatedUser.email,
+                salary: updatedUser.salary,
+                token: generateToken(updatedUser._id),
+            });
+        } else {
+            res.status(404).json({ message: 'User not found' });
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
