@@ -1,23 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import API_URL from '../config/api';
+import { MOCK_EXPENSES, MOCK_SUBSCRIPTIONS } from '../mockData';
 
 const Dashboard = ({ updateTrigger }) => {
-    const [totalExpenses, setTotalExpenses] = useState(0);
-    const [totalSubscriptions, setTotalSubscriptions] = useState(0);
-    const { user, updateProfile } = useAuth();
-    const [salary, setSalary] = useState(user?.salary || 0);
-    const [isEditingSalary, setIsEditingSalary] = useState(false);
+    // ... existing state ...
 
-    useEffect(() => {
-        if (user) {
-            fetchExpenses();
-            fetchSubscriptions();
-            setSalary(user.salary || 0);
-        }
-    }, [updateTrigger, user]);
+    // useEffect ...
 
     const fetchExpenses = async () => {
+        if (user.token === 'mock-token') {
+            const total = MOCK_EXPENSES.reduce((acc, curr) => acc + curr.amount, 0);
+            setTotalExpenses(total);
+            return;
+        }
         try {
             const res = await fetch(`${API_URL}/expenses`, {
                 headers: { Authorization: `Bearer ${user.token}` },
@@ -32,6 +28,11 @@ const Dashboard = ({ updateTrigger }) => {
     };
 
     const fetchSubscriptions = async () => {
+        if (user.token === 'mock-token') {
+            const total = MOCK_SUBSCRIPTIONS.reduce((acc, curr) => acc + curr.amount, 0);
+            setTotalSubscriptions(total);
+            return;
+        }
         try {
             const res = await fetch(`${API_URL}/subscriptions`, {
                 headers: { Authorization: `Bearer ${user.token}` },

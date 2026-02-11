@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import API_URL from '../config/api';
+import { MOCK_EXPENSES } from '../mockData';
 
 const ExpenseList = ({ updateTrigger, onChange }) => {
     const [expenses, setExpenses] = useState([]);
@@ -12,6 +13,10 @@ const ExpenseList = ({ updateTrigger, onChange }) => {
     }, [updateTrigger, user]);
 
     const fetchExpenses = async () => {
+        if (user.token === 'mock-token') {
+            setExpenses(MOCK_EXPENSES);
+            return;
+        }
         try {
             const res = await fetch(`${API_URL}/expenses`, {
                 headers: { Authorization: `Bearer ${user.token}` },

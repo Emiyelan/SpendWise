@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import API_URL from '../config/api';
+import { MOCK_SUBSCRIPTIONS } from '../mockData';
 
 const SubscriptionList = ({ updateTrigger, onChange }) => {
     const [subscriptions, setSubscriptions] = useState([]);
@@ -12,6 +13,10 @@ const SubscriptionList = ({ updateTrigger, onChange }) => {
     }, [updateTrigger, user]);
 
     const fetchSubscriptions = async () => {
+        if (user.token === 'mock-token') {
+            setSubscriptions(MOCK_SUBSCRIPTIONS);
+            return;
+        }
         try {
             const res = await fetch(`${API_URL}/subscriptions`, {
                 headers: { Authorization: `Bearer ${user.token}` },
