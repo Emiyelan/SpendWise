@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import API_URL from '../config/api';
-import { getMockSubscriptions, addMockSubscription, deleteMockSubscription } from '../mockData';
 
 const SubscriptionList = ({ updateTrigger, onChange }) => {
     const [subscriptions, setSubscriptions] = useState([]);
@@ -13,10 +12,6 @@ const SubscriptionList = ({ updateTrigger, onChange }) => {
     }, [updateTrigger, user]);
 
     const fetchSubscriptions = async () => {
-        if (user.token === 'mock-token') {
-            setSubscriptions(getMockSubscriptions());
-            return;
-        }
         try {
             const res = await fetch(`${API_URL}/subscriptions`, {
                 headers: { Authorization: `Bearer ${user.token}` },
@@ -30,12 +25,6 @@ const SubscriptionList = ({ updateTrigger, onChange }) => {
     };
 
     const handleDelete = async (id) => {
-        if (user.token === 'mock-token') {
-            deleteMockSubscription(id);
-            setSubscriptions(getMockSubscriptions());
-            onChange();
-            return;
-        }
         try {
             await fetch(`${API_URL}/subscriptions/${id}`, {
                 method: 'DELETE',
@@ -49,13 +38,6 @@ const SubscriptionList = ({ updateTrigger, onChange }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (user.token === 'mock-token') {
-            addMockSubscription(form);
-            setSubscriptions(getMockSubscriptions());
-            setForm({ name: '', amount: '', billingCycle: 'monthly', nextPaymentDate: '' });
-            onChange();
-            return;
-        }
         try {
             await fetch(`${API_URL}/subscriptions`, {
                 method: 'POST',

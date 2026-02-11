@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import API_URL from '../config/api';
-import { getMockExpenses, getMockSubscriptions } from '../mockData';
 
 const Dashboard = ({ updateTrigger }) => {
     const [totalExpenses, setTotalExpenses] = useState(0);
@@ -19,11 +18,6 @@ const Dashboard = ({ updateTrigger }) => {
     }, [updateTrigger, user]);
 
     const fetchExpenses = async () => {
-        if (user.token === 'mock-token') {
-            const total = MOCK_EXPENSES.reduce((acc, curr) => acc + curr.amount, 0);
-            setTotalExpenses(total);
-            return;
-        }
         try {
             const res = await fetch(`${API_URL}/expenses`, {
                 headers: { Authorization: `Bearer ${user.token}` },
@@ -38,12 +32,6 @@ const Dashboard = ({ updateTrigger }) => {
     };
 
     const fetchSubscriptions = async () => {
-        if (user.token === 'mock-token') {
-            const subs = getMockSubscriptions();
-            const total = subs.reduce((acc, curr) => acc + curr.amount, 0);
-            setTotalSubscriptions(total);
-            return;
-        }
         try {
             const res = await fetch(`${API_URL}/subscriptions`, {
                 headers: { Authorization: `Bearer ${user.token}` },
@@ -58,11 +46,6 @@ const Dashboard = ({ updateTrigger }) => {
     };
 
     const handleSalaryUpdate = async () => {
-        if (user.token === 'mock-token') {
-            updateProfile({ ...user, salary: Number(salary) });
-            setIsEditingSalary(false);
-            return;
-        }
         try {
             const res = await fetch(`${API_URL}/auth/profile`, {
                 method: 'PUT',
