@@ -4,9 +4,19 @@ import API_URL from '../config/api';
 import { MOCK_EXPENSES, MOCK_SUBSCRIPTIONS } from '../mockData';
 
 const Dashboard = ({ updateTrigger }) => {
-    // ... existing state ...
+    const [totalExpenses, setTotalExpenses] = useState(0);
+    const [totalSubscriptions, setTotalSubscriptions] = useState(0);
+    const { user, updateProfile } = useAuth();
+    const [salary, setSalary] = useState(user?.salary || 0);
+    const [isEditingSalary, setIsEditingSalary] = useState(false);
 
-    // useEffect ...
+    useEffect(() => {
+        if (user) {
+            fetchExpenses();
+            fetchSubscriptions();
+            setSalary(user.salary || 0);
+        }
+    }, [updateTrigger, user]);
 
     const fetchExpenses = async () => {
         if (user.token === 'mock-token') {
@@ -47,6 +57,11 @@ const Dashboard = ({ updateTrigger }) => {
     };
 
     const handleSalaryUpdate = async () => {
+        if (user.token === 'mock-token') {
+            updateProfile({ ...user, salary: Number(salary) });
+            setIsEditingSalary(false);
+            return;
+        }
         try {
             const res = await fetch(`${API_URL}/auth/profile`, {
                 method: 'PUT',
