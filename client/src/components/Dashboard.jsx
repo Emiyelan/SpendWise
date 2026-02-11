@@ -22,8 +22,9 @@ const Dashboard = ({ updateTrigger }) => {
             const res = await fetch(`${API_URL}/expenses`, {
                 headers: { Authorization: `Bearer ${user.token}` },
             });
+            if (!res.ok) throw new Error('Failed to fetch expenses');
             const data = await res.json();
-            const total = data.reduce((acc, curr) => acc + curr.amount, 0);
+            const total = Array.isArray(data) ? data.reduce((acc, curr) => acc + curr.amount, 0) : 0;
             setTotalExpenses(total);
         } catch (err) {
             console.error(err);
@@ -35,8 +36,9 @@ const Dashboard = ({ updateTrigger }) => {
             const res = await fetch(`${API_URL}/subscriptions`, {
                 headers: { Authorization: `Bearer ${user.token}` },
             });
+            if (!res.ok) throw new Error('Failed to fetch subscriptions');
             const data = await res.json();
-            const total = data.reduce((acc, curr) => acc + curr.amount, 0);
+            const total = Array.isArray(data) ? data.reduce((acc, curr) => acc + curr.amount, 0) : 0;
             setTotalSubscriptions(total);
         } catch (err) {
             console.error(err);

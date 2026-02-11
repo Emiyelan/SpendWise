@@ -16,8 +16,9 @@ const ExpenseList = ({ updateTrigger, onChange }) => {
             const res = await fetch(`${API_URL}/expenses`, {
                 headers: { Authorization: `Bearer ${user.token}` },
             });
+            if (!res.ok) throw new Error('Failed to fetch expenses');
             const data = await res.json();
-            setExpenses(data);
+            setExpenses(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error(err);
         }

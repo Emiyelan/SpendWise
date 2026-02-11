@@ -16,8 +16,9 @@ const SubscriptionList = ({ updateTrigger, onChange }) => {
             const res = await fetch(`${API_URL}/subscriptions`, {
                 headers: { Authorization: `Bearer ${user.token}` },
             });
+            if (!res.ok) throw new Error('Failed to fetch subscriptions');
             const data = await res.json();
-            setSubscriptions(data);
+            setSubscriptions(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error(err);
         }
