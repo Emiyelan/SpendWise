@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import API_URL from '../config/api';
-import { MOCK_EXPENSES } from '../mockData';
+import { getMockExpenses, addMockExpense, deleteMockExpense } from '../mockData';
 
 const ExpenseList = ({ updateTrigger, onChange }) => {
     const [expenses, setExpenses] = useState([]);
@@ -14,7 +14,7 @@ const ExpenseList = ({ updateTrigger, onChange }) => {
 
     const fetchExpenses = async () => {
         if (user.token === 'mock-token') {
-            setExpenses(MOCK_EXPENSES);
+            setExpenses(getMockExpenses());
             return;
         }
         try {
@@ -30,6 +30,13 @@ const ExpenseList = ({ updateTrigger, onChange }) => {
     };
 
     const handleDelete = async (id) => {
+        if (user.token === 'mock-token') {
+            deleteMockExpense(id);
+            // Re-fetch to sync state or just update local
+            setExpenses(getMockExpenses());
+            onChange();
+            return;
+        }
         try {
             await fetch(`${API_URL}/expenses/${id}`, {
                 method: 'DELETE',
@@ -43,6 +50,13 @@ const ExpenseList = ({ updateTrigger, onChange }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (user.token === 'mock-token') {
+            addMockExpense(form);
+            setExpenses(getMockExpenses());
+            setForm({ title: '', amount: '', category: '' });
+            onChange();
+            return;
+        }
         try {
             await fetch(`${API_URL}/expenses`, {
                 method: 'POST',
